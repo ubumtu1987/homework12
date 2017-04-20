@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Page</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+	
+</head>
+<body>
+	<div class="jumbotron">
+		<h1 class="text-center">User</h1>
+	</div>
+	<div class="container">
+	    <div class = "row">
+                 <div class = "col-md-12" Id = "TestList"> 
+        </div> 
+
+
+	    <div class = "row"> 
+			<div class="form-group">
+                <label for="Product">ProductName:</label>
+                <input type="text" class="form-control" id="Train-Name">
+			</div>
+			<div class="form-group">
+                <label for="Product">Quantity:</label>
+                <input type="text" class="form-control" id="Quan">
+			</div>
+                <button type="submit" class="btn btn-default" id="run-search"><i class="fa fa-search"></i> submit</button>
+		</div>
+        <div class = "row">
+                 <div class = "col-md-12" Id = "TimeTest"> 
+        </div> 
+	</div>
+	 <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+	 <script>
+
+	   window.onload = function(){
+       var socketsMan = io.connect(); 
+            socketsMan.emit('listfirst');
+
+
+           socketsMan.on('goback', function(data){
+           	socketsMan.emit('listfirst');
+           });
+
+
+
+            socketsMan.on('firstlist', function(data){
+              $("#TestList").html("");
+             
+              for( var i = 0 ; i < data.length ; i++){
+              	var goodDiv = $("<div>"); 
+              	goodDiv.text(data[i]);
+                $("#TestList").append( goodDiv );   
+              }   
+              
+              //$("#TestList").append(data[1]);   
+              
+              
+		   });
+            socketsMan.on('updateQ', function(data){
+            
+              socketsMan.emit('updateR', data);
+
+              
+		   });
+
+           
+
+
+
+          $("#run-search").on("click", function(event) {
+
+	         var TrainNamen = []; 
+	         TrainNamen.push( $("#Train-Name").val().trim());
+	         TrainNamen.push( $("#Quan").val().trim());
+
+	         socketsMan.emit('rint', TrainNamen);
+
+           });
+
+		   socketsMan.on('smart', function(data){
+              $("#TimeTest").html(data);      
+             
+
+              
+		   });
+
+
+	   }
+	 </script>
+	
+</body>
+</html>
